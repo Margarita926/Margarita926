@@ -81,12 +81,12 @@ EndUserAppSender → Client Deployment
 
 **Як узгоджую сценарії навантаження** моделюємо поведінку
  
-Steady load нормальний трафік
-Spike партнер підключився
-Burst імпорт / розсилка
-Slow consumer партнер відповідає 20-30 сек
-Retry storm партнер почав повторювати
-Backlog recovery підняли сервіс після падіння
+- Steady load нормальний трафік
+- Spike партнер підключився
+- Burst імпорт / розсилка
+- Slow consumer партнер відповідає 20-30 сек
+- Retry storm партнер почав повторювати
+- Backlog recovery підняли сервіс після падіння
 
 **ескалюю проблеми**
 фіксую метрику->показую бізнес impact-> пропоную варіанти вирішення(accept, mitigate,block release)
