@@ -60,16 +60,16 @@ EndUserAppSender → Client Deployment
 
 **Розробникам:**
 - які події ідемпотентні
-- що є success — доставка чи 200 OK?
-- де формується retry — у нас чи у партнера
+- що є success  доставка чи 200 OK?
+- де формується retry у нас чи у партнера
 - який максимальний payload
 - webhook sync чи через чергу
 
 **DevOps**
-- чи є rate-limit
+- чи є rate limit
 - autoscaling по CPU чи по queue lag
 - чи є dead letter queue
-- як виглядає деградація — throttling чи падіння
+- як виглядає деградація  throttling чи падіння
 - чи синхронне логування
 
 **Продакт**
