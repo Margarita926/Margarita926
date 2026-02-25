@@ -9,11 +9,11 @@
 - EndUserAppSender ↔ Account DB(Lookup client config)
 - EndUserAppSender → Client Deployment → EndUserAppSender
 
-Критичні точки інтеграції
-External System → Controller 
-RabbitMQ → Consumer
-Consumer ↔ Account DB
-EndUserAppSender → Client Deployment 
+Критичні інтеграційні точки і ризики:
+- HTTP API endpoints (latency, request size)
+- Message queue (RabbitMQ) — backlog, delivery latency
+- Database — slow queries, connection pool exhaustion
+- External APIs — slow or failing dependencies
 
 ## 2. Бізнес-вимоги та Performance SLO
 очікування щодо роботи сервісу з точки зору бізнесу та користувача
@@ -30,7 +30,7 @@ EndUserAppSender → Client Deployment
 
 | Метрика          | Значення                              |Обґрунтування
 | ---------------- | ------------------------------------- |-------------------------
-| Latency          | < 4 сек                               |час обробки webhook(орієнтир UX реального часу) це критично важливо, якщо> кількох секунд то починається retry
+| Latency          | < 500 ms                              |час обробки webhook(орієнтир UX реального часу) це критично важливо, якщо> кількох секунд то починається retry
 | Availability     | 99.9% uptime                          |на скільки сервіс доступний, втрати подій = втрата грошей
 | Throughput       | min 500 events/sec;max 2000 events/sec|скільки подій/сек (без деградації latency)при піку трафіку події стають у чергу на 20 хвилин.Орієнтир- пікове навантаження ×3                    
 | Error Rate       | 0.1%(не валідації)                    |% 5хх помилок,може привести до скритої втрати даних,  неконсистентні дані      
