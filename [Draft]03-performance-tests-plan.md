@@ -108,22 +108,52 @@
 ## 4. Обґрунтування та пріоритизація
 
 ### 4.1 Бізнес-цінність
-- ...
+- Load Testing: перевіряє, що основні бізнес-функції (пошук, оформлення замовлення, автентифікація) працюють при очікуваному навантаженні — зниження ризику втрати доходу і погіршення UX.
+- Stress Testing: виявляє межі системи — критично для планування capacity та уникнення простоїв під час маркетингових кампаній.
+- Soak Testing: виявляє проблеми стабільності (memory leaks, деградацію) — важливо для довготривалої доступності сервісу.
+- Spike Testing: перевіряє еластичність і швидкість auto-scaling — мінімізує ризик значних імпактів під час раптових піків трафіку.
+- Breakpoint / Chaos: визначає точки відмови та план відновлення — знижує ризик cascade-failures і втрати даних.
 
 ### 4.2 Технічні ризики
-- ...
+- Database connection pool exhaustion — призводить до timeouts і підвищеного error rate.
+- Message queue backlog (RabbitMQ) — збільшення latency фонового оброблення.
+- Неправильні таймаути або короткі таймаути на клієнті — штучні помилки при підвищеному навантаженні.
+- GC pauses / memory leaks у сервісах — поступова деградація продуктивності під час Soak.
+- Зовнішні API (third-party) — непередбачувані затримки або помилки, які впливають на загальну пропускну здатність.
+- Мережеві обмеження або firewall — втручання в пропускну здатність та доступність.
 
-### 4.3 Матриця пріоритетів
+
+## 4.3 Матриця пріоритетів
 | Тест | Пріоритет | Impact | Effort | Обґрунтування |
-|------|-----------|---------|--------|---------------|
-| ... | High | High | Medium | ... |
+|------|-----------|--------:|-------:|---------------|
+| Load Testing | High | High | Medium | Ключовий для підтвердження SLO та UX під середнім/піковим навантаженням |
+| Stress Testing | High | High | High | Визначає межі системи і recovery behavior — критично для capacity planning |
+| Spike Testing | High | High | Medium | Реалістичні сценарії маркетингових піків; перевірка авто-скейлу |
+| Soak Testing | Medium | Medium | High | Виявлення memory leaks; важливий для довготривалої стабільності, але довгий за часом |
+| Breakpoint Testing | Medium | Medium | High | Служить для пошуку крайньої точки відмови; ресурсозатратно |
+| Configuration Testing | Low | Low | Medium | Оптимізація конфігурацій додає ефективності, але не критична на першому етапі |
+
+---
 
 ## 5. Метрики та моніторинг
-- Ключові індикатори продуктивності
-- Інструменти збору метрик
-- Alerting та escalation procedures
+- Ключові індикатори продуктивності (KPI): p50 / p95 / p99 latency, average latency, throughput (RPS), error rate (%), availability (%), request/transaction per second, queue depth, DB connection count, GC pause times.
+- Додаткові системні метрики: CPU %, Memory MB, Disk I/O, Network I/O, thread pool saturation.
+- Інструменти збору метрик: k6 (load metrics), Prometheus (metrics collection), Grafana (dashboards), ELK/Tempo (логування, трасування), RabbitMQ Management, database monitoring (pg_stat / DMVs), WireMock logs для зовнішніх викликів.
+- Alerting та escalation procedures:
+	- Визначити thresholds (приклад): p95 > 500ms → Warning, p95 > 1000ms → Critical; error rate > 1% → Warning, >5% → Critical; availability drop > SLA → Critical.
+	- Нотифікація: Slack / PagerDuty / Email на on-call інженера.
+	- Ескалація: Severity levels (P1/P2/P3) — P1 (SLA breach / production outage) → immediate page + incident bridge; P2 (degradation) → notify dev leads; P3 (minor) → ticket backlog.
+	- Runbooks: базові кроки для діагностики (health checks, restart instances, check DB connections, inspect logs), contact list та escalation times.
 
 ## 6. Висновки
-- Готовність до виконання тестів
-- Ризики та mitigation strategies
-- Next steps для Модуля 4
+- Готовність до виконання тестів: середовище має базові вимоги; перед запуском великих сценаріїв — перевірити health endpoints, логи та мережеву доступність.
+- Ризики та mitigation strategies:
+	- Якщо DB pool exhaust — збільшити pool або масштабувати DB read replicas; оптимізувати запити.
+	- Для черг — моніторити backlog і скоригувати consumer parallelism.
+	- Для third-party залежностей — використовувати WireMock для стабільних відповідей під час тестів або впровадити захист (circuit breaker).
+- Next steps для Модуля 4:
+	1. Описати інфраструктуру з точними ресурсами (flavors, CPU/RAM) і створити `docker-compose` або k8s manifests для тестового середовища.
+	2. Налаштувати Prometheus + Grafana та зберегти dashboard templates.
+	3. Підготувати runbooks та alert rules; виконати smoke test перед великим запуском.
+
+---
