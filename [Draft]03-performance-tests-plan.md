@@ -7,6 +7,31 @@
 - Зв'язок з результатами Модуля 2
 
 ## 2. Детальний план тестів
+1) Типи тестів та приклади сценаріїв
+- Load Test: типові user journeys, ramp-up до 100 VUs, sustain 2m, target ~100 RPS per endpoint
+- Stress Test: збільшення до 150–200% від піку, утримання 10m, моніторинг recovery
+- Soak Test: 24h при 200 VUs (перевірка memory leaks)
+- Spike Test: instant spike 10× baseline на 5m, відновлення 10m
+- Breakpoint Test: крокове збільшення VUs до відмови (100→200→400→800)
+- Configuration Test: порівняння вертикального vs горизонтального scaling
+
+2) Параметри (приклад для k6)
+- Load: stages: 30s→10 VUs, 2m→50 VUs, 1m→100 VUs, sustain as required
+- Timeouts: http timeout 5s (збільшити при потребі)
+- Think time: random 1–3s
+
+3) Критерії успішності (приклад)
+- p95 < 500 ms — PASS
+- Error rate < 1% — PASS
+- Throughput ≥ target RPS — PASS
+
+4) Метрики для збору
+- Application: latency percentiles, error counts
+- System: CPU, memory, disk I/O, network
+- Infrastructure: DB connections, queue depth, GC
+
+5) Команди та пріоритети
+- Першочергові тести: Smoke → Load → Stress. Soak та Breakpoint — в окремому вікні через довгу тривалість.
 
 ### 2.1 Load Testing
 | Параметр | Значення | Обґрунтування |
