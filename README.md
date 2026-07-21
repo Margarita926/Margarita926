@@ -2,7 +2,7 @@
 # Hi there, I'm Marharyta 👋   
 QA Automation Engineer
 
-JavaScript • Playwright • API Testing • GitHub Actions
+JavaScript • Playwright • API Testing • GitHub Actions 
 Creating maintainable test automation solutions and continuously improving QA processes.
 
 ## 👩‍💻 About Me
