@@ -1,5 +1,5 @@
 
-# Hi there, I'm Marharyta 👋   
+# Hi, I'm Marharyta 👋
 QA Automation Engineer
 JavaScript • Playwright • API Testing • GitHub Actions 
 
